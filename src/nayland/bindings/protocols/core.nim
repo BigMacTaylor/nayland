@@ -144,7 +144,9 @@ type
       offer: ptr wl_data_offer,
     ) {.cdecl.}
     leave*: proc(data: pointer, source: ptr wl_data_device) {.cdecl.}
-    motion*: proc(data: pointer, source: ptr wl_data_device, x, y: wl_fixed) {.cdecl.}
+    motion*: proc(
+      data: pointer, source: ptr wl_data_device, serial: uint32, x, y: wl_fixed
+    ) {.cdecl.}
     drop*: proc(data: pointer, source: ptr wl_data_device) {.cdecl.}
     selection*: proc(
       data: pointer, source: ptr wl_data_device, offer: ptr wl_data_offer
@@ -253,6 +255,10 @@ proc wl_data_device_start_drag*(
 proc wl_data_device_set_selection*(
   dev: ptr wl_data_device, src: ptr wl_data_source, serial: uint32
 )
+
+proc wl_data_device_add_listener*(
+  o: ptr wl_data_device, l: ptr wl_data_device_listener, data: pointer
+): int32
 
 proc wl_data_device_release*(dev: ptr wl_data_device)
 
