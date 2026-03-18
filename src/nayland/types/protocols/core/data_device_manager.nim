@@ -19,3 +19,6 @@ proc createDataSource*(manager: DataDeviceManager): DataSource =
 
 proc getDataDevice*(manager: DataDeviceManager, seat: Seat): DataDevice =
   newDataDevice(wl_data_device_manager_get_data_device(manager.handle, seat.handle))
+
+func initDataDeviceManager*(handle: pointer): DataDeviceManager =
+  DataDeviceManager(handle: cast[ptr wl_data_device_manager](handle))
