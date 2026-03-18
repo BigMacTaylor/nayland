@@ -26,18 +26,21 @@ type
 proc `=destroy`*(offer: DataOfferObj) =
   wl_data_offer_destroy(offer.handle)
 
+func newDataOffer*(handle: ptr wl_data_offer): DataOffer {.inline.} =
+  DataOffer(handle: handle, payload: DataOfferPayload())
+
 let listener = wl_data_offer_listener(
   offer: proc(data: pointer, offer: ptr wl_data_offer, mime: ConstCStr) {.cdecl.} =
     let payload = cast[DataOfferPayload](data)
-    payload.offerCb(DataOffer(handle: offer), $mime),
+    payload.offerCb(newDataOffer(offer), $mime),
   source_actions: proc(
       data: pointer, offer: ptr wl_data_offer, actions: uint32
   ) {.cdecl.} =
     let payload = cast[DataOfferPayload](data)
-    payload.sourceActionsCb(DataOffer(handle: offer), cast[set[DNDAction]](actions)),
+    payload.sourceActionsCb(newDataOffer(offer), cast[set[DNDAction]](actions)),
   action: proc(data: pointer, offer: ptr wl_data_offer, dndAction: uint32) {.cdecl.} =
     let payload = cast[DataOfferPayload](data)
-    payload.actionCb(DataOffer(handle: offer), cast[set[DNDAction]](dndAction)),
+    payload.actionCb(newDataOffer(offer), cast[set[DNDAction]](dndAction)),
 )
 
 proc accept*(offer: DataOffer, serial: uint32, mimeType: string) =
@@ -67,6 +70,3 @@ proc setActions*(offer: DataOffer, dndActions, preferredActions: set[DNDAction])
   wl_data_offer_set_actions(
     offer.handle, cast[uint32](dndActions), cast[uint32](preferredActions)
   )
-
-func newDataOffer*(handle: ptr wl_data_offer): DataOffer =
-  DataOffer(handle: handle, payload: DataOfferPayload())
