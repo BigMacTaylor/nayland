@@ -152,6 +152,20 @@ type
       data: pointer, source: ptr wl_data_device, offer: ptr wl_data_offer
     ) {.cdecl.}
 
+  wl_output_listener* {.importc: "struct $1".} = object
+    geometry*: proc(
+      d: pointer,
+      o: ptr wl_output,
+      x, y, pw, ph, subpixel: int32,
+      make, model: ConstCStr,
+      transform: int32,
+    ) {.cdecl.}
+    mode*: proc(d: pointer, o: ptr wl_output, f: uint32, w, h, r: int32) {.cdecl.}
+    done*: proc(d: pointer, o: ptr wl_output) {.cdecl.}
+    scale*: proc(d: pointer, o: ptr wl_output, f: int32) {.cdecl.}
+    name*: proc(d: pointer, o: ptr wl_output, name: ConstCStr) {.cdecl.}
+    description*: proc(d: pointer, o: ptr wl_output, desc: ConstCStr) {.cdecl.}
+
 {.push importc.}
 
 let
@@ -277,10 +291,16 @@ proc wl_data_offer_add_listener*(
   o: ptr wl_data_offer, l: ptr wl_data_offer_listener, data: pointer
 ): int32
 
+proc wl_output_release*(o: ptr wl_output)
+proc wl_output_add_listener*(
+  o: ptr wl_output, listener: ptr wl_output_listener, cookie: pointer
+): int32
+
 # Core Wayland protocol interfaces
 let wl_compositor_interface*: wl_interface
 let wl_shm_interface*: wl_interface
 let wl_seat_interface*: wl_interface
+let wl_output_interface*: wl_interface
 
 {.pop.}
 

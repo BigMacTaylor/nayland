@@ -15,7 +15,7 @@ let reg = initRegistry(disp)
 echo "roundtrip: " & $disp.roundtrip()
 
 assert "wl_seat" in reg
-assert "wl_skibidi" notin reg
+assert "wl_test" notin reg
 
 for id in reg:
   echo id
@@ -24,6 +24,40 @@ let compIface = reg["wl_compositor"]
 let comp = initCompositor(
   reg.bindInterface(compIface.name, wl_compositor_interface.addr, compIface.version)
 )
+
+let outputIface = reg["wl_output"]
+let output = initOutput(
+  reg.bindInterface(outputIface.name, wl_output_interface.addr, outputIface.version)
+)
+output.onGeometry = proc(
+    _: Output,
+    x, y, pw, ph: int32,
+    subpixel: OutputSubpixel,
+    make, model: string,
+    trans: OutputTransform,
+) =
+  debugecho "Output::onGeometry"
+  debugecho "~> x: " & $x & "; y: " & $y & "; physical width: " & $pw &
+    "; physical height: " & $ph
+  debugecho "~> subpixel: " & $subpixel & "; make: " & make & "; model: " & model &
+    "; transform: " & $trans
+
+output.onMode = proc(_: Output, flags, width, height, refresh: auto) =
+  discard
+
+output.onScale = proc(_: Output, factor: int32) =
+  debugecho "Output::onScale(" & $factor & ')'
+
+output.onName = proc(_: Output, name: string) =
+  debugecho "Output::onName(" & name & ')'
+
+output.onDescription = proc(_: Output, desc: string) =
+  debugecho "Output::onDescription(" & desc & ')'
+
+output.onDone = proc(_: Output) =
+  debugecho "Output::onDone"
+
+output.attachCallbacks()
 
 let shmIface = reg["wl_shm"]
 let shmi =
@@ -189,3 +223,5 @@ if bell != nil:
 
 while running:
   disp.roundtrip()
+
+output.release()
