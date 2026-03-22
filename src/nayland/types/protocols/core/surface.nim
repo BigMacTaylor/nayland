@@ -1,6 +1,6 @@
 ## Wrapper around `wl_surface`
 ##
-## Copyright (C) 2025 Trayambak Rai (xtrayambak at disroot dot org)
+## Copyright (C) 2025-2026 Trayambak Rai (xtrayambak@disroot.org)
 
 #!fmt: off
 import pkg/nayland/bindings/libwayland,
@@ -29,5 +29,5 @@ proc attach*(surface: Surface, buffer: Buffer, x, y: int32) =
 proc frame*(surface: Surface): Callback =
   newCallback(wl_surface_frame(surface.handle))
 
-proc newSurface*(handle: ptr wl_surface): Surface =
+func newSurface*(handle: ptr wl_surface): Surface {.inline.} =
   Surface(handle: handle)

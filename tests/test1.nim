@@ -129,6 +129,9 @@ keyb.onRepeatInfo = proc(keyb: Keyboard, rate, delay: int32) =
 
 keyb.attachCallbacks()
 
+# BUG: For some reason, mutter hits a segmentation fault if you call this.
+# let touch = get seatObj.getTouch()
+
 let surf = comp.createSurface()
 disp.roundtrip()
 

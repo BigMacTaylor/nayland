@@ -40,7 +40,7 @@ $ nimble add https://github.com/xTrayambak/nayland
 - [X] `wl_seat`
 - [X] `wl_pointer`
 - [X] `wl_keyboard`
-- [ ] `wl_touch`
+- [X] `wl_touch`
 - [X] `wl_output`
 - [ ] `wl_subcompositor`
 - [X] `wl_region`

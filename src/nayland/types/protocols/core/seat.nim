@@ -3,7 +3,7 @@
 ## Copyright (C) 2025 Trayambak Rai (xtrayambak@disroot.org)
 import std/options
 import pkg/nayland/bindings/libwayland, pkg/nayland/bindings/protocols/core
-import pkg/nayland/types/protocols/core/[keyboard, pointer]
+import pkg/nayland/types/protocols/core/[keyboard, pointer, touch]
 
 type
   SeatObj = object
@@ -30,6 +30,13 @@ proc getKeyboard*(seat: Seat): Option[Keyboard] =
     return none(Keyboard)
 
   some(newKeyboard(handle))
+
+proc getTouch*(seat: Seat): Option[Touch] =
+  let handle = wl_seat_get_touch(seat.handle)
+  if handle == nil:
+    return none(Touch)
+
+  some(newTouch(handle))
 
 func initSeat*(handle: pointer): Seat =
   Seat(handle: cast[ptr wl_seat](handle))

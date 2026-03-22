@@ -34,6 +34,8 @@ type
   wl_data_source* {.importc: "struct $1".} = object
   wl_data_device* {.importc: "struct $1".} = object
   wl_data_device_manager* {.importc: "struct $1".} = object
+  wl_touch* {.importc: "struct $1".} = object
+  wl_subsurface* {.importc: "struct $1".} = object
 
   wl_pointer_listener* {.importc: "struct $1".} = object
     enter*: proc(
@@ -166,6 +168,29 @@ type
     name*: proc(d: pointer, o: ptr wl_output, name: ConstCStr) {.cdecl.}
     description*: proc(d: pointer, o: ptr wl_output, desc: ConstCStr) {.cdecl.}
 
+  wl_touch_listener* {.importc: "struct $1".} = object
+    down*: proc(
+      d: pointer,
+      t: ptr wl_touch,
+      serial: uint32,
+      time: uint32,
+      surface: ptr wl_surface,
+      id: int32,
+      x, y: wl_fixed,
+    ) {.cdecl.}
+    up*: proc(d: pointer, t: ptr wl_touch, serial: uint32, time: uint32, id: int32) {.
+      cdecl
+    .}
+    motion*: proc(d: pointer, t: ptr wl_touch, time: uint32, id: int32, x, y: wl_fixed) {.
+      cdecl
+    .}
+    frame*: proc(d: pointer, t: ptr wl_touch) {.cdecl.}
+    cancel*: proc(d: pointer, t: ptr wl_touch) {.cdecl.}
+    shape*:
+      proc(d: pointer, t: ptr wl_touch, id: int32, major, minor: wl_fixed) {.cdecl.}
+    orientation*:
+      proc(d: pointer, t: ptr wl_touch, id: int32, orientation: wl_fixed) {.cdecl.}
+
 {.push importc.}
 
 let
@@ -231,6 +256,7 @@ proc wl_pointer_release*(p: ptr wl_pointer)
 
 proc wl_seat_get_pointer*(s: ptr wl_seat): ptr wl_pointer
 proc wl_seat_get_keyboard*(s: ptr wl_seat): ptr wl_keyboard
+proc wl_seat_get_touch*(s: ptr wl_seat): ptr wl_touch
 proc wl_seat_release*(s: ptr wl_seat)
 proc wl_seat_add_listener*(
   s: ptr wl_seat, listener: ptr wl_seat_listener, data: pointer
@@ -294,6 +320,11 @@ proc wl_data_offer_add_listener*(
 proc wl_output_release*(o: ptr wl_output)
 proc wl_output_add_listener*(
   o: ptr wl_output, listener: ptr wl_output_listener, cookie: pointer
+): int32
+
+proc wl_touch_release*(t: ptr wl_touch)
+proc wl_touch_add_listener*(
+  t: ptr wl_touch, listener: ptr wl_touch_listener, cookie: pointer
 ): int32
 
 # Core Wayland protocol interfaces
