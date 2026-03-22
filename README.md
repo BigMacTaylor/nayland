@@ -68,3 +68,7 @@ $ nimble add https://github.com/xTrayambak/nayland
 ## Idle Inhibit V1
 - [X] `zwp_idle_inhibit_manager_v1`
 - [X] `zwp_idle_inhibitor_v1`
+
+## Layer Shell V1 (Available in most non-GNOME environments)
+- [X] `zwlr_layer_shell_v1`
+- [X] `zwlr_layer_surface_v1`
